@@ -1,27 +1,48 @@
-from lxml import html
-import requests
-from tqdm import tqdm
+
 import os
+from datetime import datetime, timedelta
+
+import wget
+from tqdm import tqdm
+
 import GeoNames.GeoNames as GN
+
+
+def check_create_directory(directory):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
+
+
+def pull_file(sourcefile, desitinationfile):
+    if not os.path.isfile(desitinationfile):
+        # Suppress the default download progress bar which overwrites the overall progress bar from tqdm
+        wget.download(sourcefile, desitinationfile, bar=None)
+
 
 def main():
     geonames = GN.GeoNames()
+    geonames_dump = GN.GeoNamesDump()
     currentdir = os.path.dirname(os.path.realpath(__file__))
-    basename = geonames.getDir(currentdir, 'downloads')
-    page = requests.get(geonames.url)
-    tree = html.fromstring(page.content)
+    downloads = geonames.getDir(currentdir, 'downloads')
 
-    anchors = tree.xpath('//a/@href')
-    with tqdm(total=len(anchors)) as pbar:
-        for anchor in anchors:
-            # we are only interested in downloading zip and txt files
-            if ".zip" in anchor or ".txt" in anchor:
-                filename = basename + anchor
-                if not os.path.isfile(filename):
-                    r = requests.get(geonames.url + anchor, stream=True)
-                    with open(filename, 'wb') as f:
-                        for chunk in r.iter_content():
-                            f.write(chunk)
+    check_create_directory(downloads)
+
+    total = len(geonames_dump.FILES) + len(geonames_dump.INCREMENTAL)
+
+    with tqdm(total=total) as pbar:
+        # first process the static files, if present we skip them and move onto incremental files
+        for file in geonames_dump.FILES:
+            sourcefilename = geonames_dump.URL + file
+            destinationfilename = downloads + file
+            pull_file(sourcefilename, destinationfilename)
             pbar.update(1)
+
+        for file in geonames_dump.INCREMENTAL:
+            # construct the filename from todays date
+            sourcefilename = geonames_dump.URL + file + (datetime.today() - timedelta(1)).strftime('%Y-%m-%d') + '.txt'
+            destinationfilename = downloads + file + (datetime.today() - timedelta(1)).strftime('%Y-%m-%d') + '.txt'
+            pull_file(sourcefilename, destinationfilename)
+            pbar.update(1)
+
 
 main()
