@@ -5,7 +5,7 @@ import os
 import GeoNames.GeoNames as GN
 
 def main():
-    geoname = GN.GeoNames()
+    geonames = GN.GeoNames()
     currentdir = os.path.dirname(os.path.realpath(__file__))
     basename = geonames.getDir(currentdir, 'downloads')
     page = requests.get(geonames.url)
@@ -18,8 +18,10 @@ def main():
             if ".zip" in anchor or ".txt" in anchor:
                 filename = basename + anchor
                 if not os.path.isfile(filename):
-                    r = requests.get(url + anchor, stream=True)
+                    r = requests.get(geonames.url + anchor, stream=True)
                     with open(filename, 'wb') as f:
                         for chunk in r.iter_content():
                             f.write(chunk)
             pbar.update(1)
+
+main()
