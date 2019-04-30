@@ -17,12 +17,12 @@ conn = mysql.connector.connect(**database_config)
 conn.sql_mode = ''
 cursor = conn.cursor()
 
-rabbit_user = os.getenv('RABBIT_USER')
-rabbit_pass = os.getenv('RABBIT_PASS')
+rabbit_user = os.getenv('RABBITMQ_USER')
+rabbit_pass = os.getenv('RABBITMQ_PASS')
 credentials = pika.PlainCredentials(rabbit_user, rabbit_pass)
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
-        host='192.168.2.101',
+        host=os.getenv('RABBITMQ_HOST'),
         credentials=credentials
     )
 )
