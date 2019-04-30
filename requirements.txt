@@ -2,6 +2,7 @@ certifi==2019.3.9
 chardet==3.0.4
 idna==2.8
 mysql-connector-python==8.0.16
+pika==1.0.1
 protobuf==3.7.1
 python-dotenv==0.10.1
 six==1.12.0
