@@ -18,7 +18,7 @@
 ###############################################################################
 
 # change to the script's directory (this directory)
-cd "${0%/*}"
+cd "${0%/*}" || exit
 
 # chain the download and process only if the download was successful
 venv/bin/python download.py > /dev/null && venv/bin/python process.py > /dev/null
