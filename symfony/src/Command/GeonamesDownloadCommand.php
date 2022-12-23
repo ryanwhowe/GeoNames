@@ -30,38 +30,46 @@ TXT
     protected function execute(InputInterface $input, OutputInterface $output) {
         parent::execute($input, $output);
 
+        $this->log->info('Process Starting');
+
         $dryrun = $input->getOption('dry-run');
+        if($dryrun) $this->log->notice('dry-run enabled');
 
         foreach (['modifications', 'deletes'] as $file) {
             $url = self::GEONAMES_BASE_URL . $file . '-' . date('Y-m-d', strtotime('yesterday')) . '.txt';
+            $this->log->debug('url: ' . $url);
+
             $destinationFile = realpath(self::DESTINATION_BASE_DIR) . "/" . date('Y-m-d', strtotime('yesterday')) . '-' . $file . '.txt';
-            $this->io->note('Processing URL: ' . $url);
+            $this->log->debug('file: ' . $destinationFile);
+
+            $this->log->notice('Processing URL: ' . $url);
 
             $result = $this->getHttpResponseCode_using_curl($url);
             if (self::HTTP_OK === $result) {
-                $this->io->success('File was located, downloading file to :' . $destinationFile);
+                $this->log->debug('File was located, downloading file to :' . $destinationFile);
                 if ($dryrun) {
-                    $this->io->note('Dry-Run enabled, file will not be downloaded');
+                    $this->log->notice('Dry-Run enabled, file will not be downloaded');
                 } else {
                     if (file_put_contents($destinationFile, file_get_contents($url))) {
-                        $this->createIncemenetalFileRecord($destinationFile);
-                        $this->io->success($destinationFile . ' written');
+                        $this->createIncrementalFileRecord($destinationFile);
+                        $this->log->debug($destinationFile . ' written');
                     } else {
-                        $this->io->error('There was an error downloading or writing ' . $url);
+                        $this->log->error('There was an error downloading or writing ' . $url);
                     }
                 }
             } else {
-                $this->io->error('File did not return a successful response');
+                $this->log->error('File did not return a successful response');
             }
         }
 
-        return self::SUCCESS;
+        $this->log->info('Process Completed');
 
+        return self::SUCCESS;
     }
 
-    protected function createIncemenetalFileRecord($filename){
+    protected function createIncrementalFileRecord($filename){
         Db::getConnection()->executeQuery(<<<SQL
-INSERT INTO incremental_files (filename, download_date) VALUE (?, NOW())
+INSERT INTO incremental_files (filename, download_date) VALUE (?, NOW()) ON DUPLICATE KEY UPDATE download_date=NOW();
 SQL
         , [$filename]);
     }

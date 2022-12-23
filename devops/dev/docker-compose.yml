@@ -5,12 +5,12 @@ x-config: &common-config
   RABBITRQ_PORT: 5672
   RABBITRQ_USER: guest
   RABBITRQ_PASS: guest
-  DATABASE_URL: mysql://root:root@db:3306/GeoNames?serverVersion=5.7
   DATABASE_USER: root
   DATABASE_NAME: GeoNames
   DATABASE_PASS: root
-  DATABASE_HOST: db # needed for the wait-for-it.sh script
-  DATABASE_PORT: 3306 # needed for the wait-for-it.sh script
+  DATABASE_HOST: db
+  DATABASE_PORT: 3306
+  LOG_LEVEL: 100
 
 services:
   db:

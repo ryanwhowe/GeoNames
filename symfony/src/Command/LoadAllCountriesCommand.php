@@ -10,9 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LoadAllCountriesCommand extends BaseCommand {
 
-    const GEONAMES_BASE_URL = 'https://download.geonames.org/export/dump/';
-    const DESTINATION_BASE_DIR = '/tmp/data';
-    const HTTP_OK = 200;
     const BULK_INSERT = 900;
 
     protected static $defaultName = 'geonames:load-allcountries';
@@ -36,19 +33,22 @@ TXT
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         parent::execute($input, $output);
+        $this->log->info('Process Starting');
+
         $dryrun = $input->getOption('dry-run');
 
         if($dryrun){
+            $this->log->notice('dry-run enabled, no database connection set');
             $connection = null;
         } else {
             $connection = Db::getConnection();
-            $this->log("Truncating the geonames table");
+            $this->log->warning("Truncating the geonames table");
             $connection->executeQuery("TRUNCATE TABLE geoname;");
         }
 
-        $this->log("Gathering file data");
+        $this->log->notice("Gathering file data");
         $lines = $this->getLineCount("/tmp/data/allCountries.txt");
-        $this->log("loading ${lines} records");
+        $this->log->info("loading ${lines} records");
         $pg = $this->io->createProgressBar($lines);
         $handle = fopen("/tmp/data/allCountries.txt", "r");
 
@@ -110,6 +110,8 @@ SQL;
         fclose($handle);
 
         $pg->finish();
+
+        $this->log->info('Process Completed');
 
         return self::SUCCESS;
 
