@@ -1,8 +1,9 @@
 <?php
 
-namespace Chs\Message\Command;
+namespace Chs\Geoname\Command;
 
-use Chs\Message\Util\Db;
+use Chs\Geoname\Util\Db;
+use Chs\Geoname\Util\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +15,11 @@ class GeonamesDownloadCommand extends BaseCommand {
     const HTTP_OK = 200;
 
     protected static $defaultName = 'geonames:download';
+
+    public function __construct(string $name = null) {
+        parent::__construct($name);
+        $this->log = Logger::getLogger();
+    }
 
     protected function configure() {
         $this
@@ -29,7 +35,10 @@ TXT
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         parent::execute($input, $output);
-
+        $this->log->pushProcessor(function ($entry) {
+            $entry['extra']['class'] = self::class;
+            return $entry;
+        });
         $this->log->info('Process Starting');
 
         $dryrun = $input->getOption('dry-run');
@@ -50,7 +59,7 @@ TXT
                 if ($dryrun) {
                     $this->log->notice('Dry-Run enabled, file will not be downloaded');
                 } else {
-                    if (file_put_contents($destinationFile, file_get_contents($url))) {
+                    if (false !== file_put_contents($destinationFile, file_get_contents($url))) {
                         $this->createIncrementalFileRecord($destinationFile);
                         $this->log->debug($destinationFile . ' written');
                     } else {

@@ -1,8 +1,9 @@
 <?php
 
-namespace Chs\Message\Command;
+namespace Chs\Geoname\Command;
 
-use Chs\Message\Util\Db;
+use Chs\Geoname\Util\Db;
+use Chs\Geoname\Util\Logger;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,6 +14,11 @@ class LoadAllCountriesCommand extends BaseCommand {
     const BULK_INSERT = 900;
 
     protected static $defaultName = 'geonames:load-allcountries';
+
+    public function __construct(string $name = null) {
+        parent::__construct($name);
+        $this->log = Logger::getLogger();
+    }
 
     protected function configure() {
         $this
@@ -33,6 +39,10 @@ TXT
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         parent::execute($input, $output);
+        $this->log->pushProcessor(function ($entry) {
+            $entry['extra']['class'] = self::class;
+            return $entry;
+        });
         $this->log->info('Process Starting');
 
         $dryrun = $input->getOption('dry-run');

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Chs\Message\Util;
+namespace Chs\Geoname\Util;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Configuration;

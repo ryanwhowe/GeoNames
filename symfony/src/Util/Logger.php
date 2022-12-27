@@ -1,6 +1,6 @@
 <?php
 
-namespace Chs\Message\Util;
+namespace Chs\Geoname\Util;
 
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger as MonoLogger;

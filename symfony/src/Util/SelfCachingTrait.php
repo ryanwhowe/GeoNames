@@ -1,6 +1,6 @@
 <?php
 
-namespace Chs\Message\Util;
+namespace Chs\Geoname\Util;
 
 trait SelfCachingTrait {
     protected static array $_cache = [];

@@ -328,11 +328,31 @@ class GeoName implements JsonSerializable, Serializable {
 
 
     public function jsonSerialize() {
-        // TODO: Implement jsonSerialize() method.
+        return json_encode($this->serialize());
     }
 
     public function serialize() {
-        // TODO: Implement serialize() method.
+        return [
+            $this->geonameid,
+            $this->name,
+            $this->asciiname,
+            $this->alternatenames,
+            $this->latitude,
+            $this->longitude,
+            $this->fclass,
+            $this->fcode,
+            $this->country,
+            $this->cc2,
+            $this->admin1,
+            $this->admin2,
+            $this->admin3,
+            $this->admin4,
+            $this->population,
+            $this->elevation,
+            $this->gtopo30,
+            $this->timezone,
+            $this->moddate,
+        ];
     }
 
     public function unserialize(string $data) {

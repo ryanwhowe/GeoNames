@@ -1,8 +1,7 @@
 <?php
 
-namespace Chs\Message\Command;
+namespace Chs\Geoname\Command;
 
-use Chs\Message\Util\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,15 +11,6 @@ abstract class BaseCommand extends Command {
 
     protected SymfonyStyle $io;
     protected \Monolog\Logger $log;
-
-    public function __construct(string $name = null) {
-        parent::__construct($name);
-        $this->log = Logger::getLogger();
-        $this->log->pushProcessor(function($entry){
-            $entry['extra']['class'] = static::class;
-            return $entry;
-        });
-    }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $this->io = new SymfonyStyle($input, $output);

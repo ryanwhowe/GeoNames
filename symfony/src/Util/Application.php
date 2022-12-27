@@ -1,6 +1,6 @@
 <?php
 
-namespace Chs\Message\Util;
+namespace Chs\Geoname\Util;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
 use ReflectionClass;
@@ -29,12 +29,12 @@ class Application extends SymfonyApplication{
      */
     protected function registerCommands()
     {
-        if (!is_dir($dir = __DIR__ . '/../Command')) {echo "Ohh no!!!"; return; }
+        if (!is_dir($dir = __DIR__ . '/../Command')) return;
 
         $finder = new Finder();
         $finder->files()->name('*Command.php')->in($dir);
 
-        $prefix = 'Chs\\Message\\Command';
+        $prefix = 'Chs\\Geoname\\Command';
         foreach ($finder as $file) {
             $ns = $prefix;
             if ($relativePath = $file->getRelativePath()) {
