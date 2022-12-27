@@ -8,7 +8,7 @@ use ReflectionException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 
-class Application extends SymfonyApplication{
+class Application extends SymfonyApplication {
 
     const NAME = 'GeoNames Console';
     const VERSION = '0.0.1';
@@ -27,8 +27,7 @@ class Application extends SymfonyApplication{
      * @return void
      * @throws ReflectionException
      */
-    protected function registerCommands()
-    {
+    protected function registerCommands() {
         if (!is_dir($dir = __DIR__ . '/../Command')) return;
 
         $finder = new Finder();
@@ -38,9 +37,9 @@ class Application extends SymfonyApplication{
         foreach ($finder as $file) {
             $ns = $prefix;
             if ($relativePath = $file->getRelativePath()) {
-                $ns = $prefix . '\\'.strtr($relativePath, '/', '\\');
+                $ns = $prefix . '\\' . strtr($relativePath, '/', '\\');
             }
-            $r = new ReflectionClass($ns.'\\'.$file->getBasename('.php'));
+            $r = new ReflectionClass($ns . '\\' . $file->getBasename('.php'));
             if ($r->isSubclassOf('Symfony\\Component\\Console\\Command\\Command') && !$r->isAbstract()) {
                 /** @var Command $r */
                 $this->add($r->newInstance());

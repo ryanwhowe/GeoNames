@@ -1,26 +1,28 @@
 <?php
 
-class GeoName implements JsonSerializable, Serializable {
+namespace Chs\Geoname\Entity;
+
+class GeoName implements \JsonSerializable, \Serializable {
 
     private int $geonameid;
-    private string $name;
-    private string $asciiname;
-    private string $alternatenames;
-    private string $latitude;
-    private string $longitude;
-    private string $fclass;
-    private string $fcode;
-    private string $country;
-    private string $cc2;
-    private string $admin1;
-    private string $admin2;
-    private string $admin3;
-    private string $admin4;
-    private int $population;
-    private int $elevation;
-    private int $gtopo30;
-    private string $timezone;
-    private string $moddate;
+    private ?string $name = null;
+    private ?string $asciiname = null;
+    private ?string $alternatenames = null;
+    private ?string $latitude = null;
+    private ?string $longitude = null;
+    private ?string $fclass = null;
+    private ?string $fcode = null;
+    private ?string $country = null;
+    private ?string $cc2 = null;
+    private ?string $admin1 = null;
+    private ?string $admin2 = null;
+    private ?string $admin3 = null;
+    private ?string $admin4 = null;
+    private ?int $population = null;
+    private ?int $elevation = null;
+    private ?int $gtopo30 = null;
+    private ?string $timezone = null;
+    private ?string $moddate = null;
 
     /**
      * @return int

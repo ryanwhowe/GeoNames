@@ -8,8 +8,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 
-class Db
-{
+class Db {
     /**
      * @var ?Connection $connection
      */
@@ -20,7 +19,7 @@ class Db
      * @throws Exception
      */
     public static function getConnection(): Connection {
-        if(self::$connection === null){
+        if (self::$connection === null) {
             $config = new Configuration();
 
             $connectionParams = [
