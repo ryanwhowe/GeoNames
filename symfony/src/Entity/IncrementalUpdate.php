@@ -12,10 +12,6 @@ class IncrementalUpdate implements \Serializable {
     private int $type;
     private GeoName $data;
 
-    public function __construct(int $type, GeoName $data){
-        $this->setType($type)->setData($data);
-    }
-
     /**
      * @return int
      */
@@ -64,10 +60,17 @@ class IncrementalUpdate implements \Serializable {
      * @inheritDoc
      */
     public function unserialize(string $data) {
-        $data = json_decode($data);
+        $data = json_decode($data, true);
         $this->setType($data['type']);
         $geoname = new GeoName();
-        $geoname->unserialize($data['data']);
+        $geoname->unserialize(implode("\t",$data['data']));
         $this->setData($geoname);
+    }
+
+    public function isDelete(): bool {
+        return self::TYPE_DELETE === $this->type;
+    }
+    public function isUpdate(): bool {
+        return self::TYPE_UPDATE === $this->type;
     }
 }
