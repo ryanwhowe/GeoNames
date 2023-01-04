@@ -45,4 +45,4 @@ RUN chmod +x /tmp/scripts/*.sh
 RUN mkdir /tmp/data
 RUN mkdir /tmp/logs
 
-WORKDIR /var/www/symfony/
+WORKDIR /var/www/php/

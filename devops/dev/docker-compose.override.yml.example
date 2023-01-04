@@ -4,7 +4,7 @@ services:
 
   cli:
     volumes:
-      - *SOLUTION PATH*/symfony:/var/www/symfony/
+      - *SOLUTION PATH*/php:/var/www/php/
       - *SOLUTION PATH*/data:/tmp/data
       - *SOLUTION PATH*/logs:/tmp/logs
     environment:
