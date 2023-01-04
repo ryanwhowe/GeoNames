@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+
+  cli:
+    volumes:
+      - *SOLUTION PATH*/php:/var/www/php/
+      - *SOLUTION PATH*/data:/tmp/data
+      - *SOLUTION PATH*/logs:/tmp/logs
+    environment:
+      APP_ENV: dev
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9003 remote_connect_back=0
