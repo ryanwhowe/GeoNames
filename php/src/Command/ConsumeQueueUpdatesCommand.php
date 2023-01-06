@@ -13,9 +13,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WriteQueueUpdatesCommand extends BaseCommand {
+class ConsumeQueueUpdatesCommand extends BaseCommand {
 
-    protected static $defaultName = 'geonames:write-queue-updates';
+    protected static $defaultName = 'geonames:consume-queue-updates';
 
     /**
      * @var AMQPChannel
@@ -29,14 +29,7 @@ class WriteQueueUpdatesCommand extends BaseCommand {
 
     protected function configure() {
         $this
-            ->setDescription('Pull any queued updates and persist them to the database')
-            ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Check if available, do not download')
-            ->setHelp(<<<TXT
-
-Download the daily incremental files from Geonames
-
-TXT
-            );
+            ->setDescription('Consume queued updates and persist them to the database');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -90,7 +83,7 @@ TXT
             false,
             false,
             false,
-            '\Chs\Geoname\Command\WriteQueueUpdatesCommand::processFunction'
+            '\Chs\Geoname\Command\ConsumeQueueUpdatesCommand::processFunction'
         );
         while(count($this->connection->callbacks)){
             $this->connection->wait();
