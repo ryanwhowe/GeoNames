@@ -31,14 +31,7 @@ class ParseUpdateFilesCommand extends BaseCommand {
 
     protected function configure() {
         $this
-            ->setDescription('Download incremental daily files')
-            ->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Check if available, do not download')
-            ->setHelp(<<<TXT
-
-Download the daily incremental files from Geonames
-
-TXT
-            );
+            ->setDescription('Parse any unprocessed update files and add them to the update queue');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -152,36 +145,39 @@ SQL
             while(!$file->eof()){
                 $line = $file->fgets();
                 $parts = explode("\t", $line);
-                if(count($parts) > 0) { // each line as a 0 length line at the end
-                    $parts = array_map('trim', $parts);
-                    $geoname = new GeoName();
-                    $type = IncrementalUpdate::TYPE_DELETE;
-                    $geoname->setGeonameid((int)$parts[0]);
-                    if (count($parts) > 3) {
-                        $type = IncrementalUpdate::TYPE_UPDATE;
-                        $geoname->setName($parts[1])
-                            ->setAsciiname($parts[2])
-                            ->setAlternatenames($parts[3])
-                            ->setLatitude((float)$parts[4])
-                            ->setLongitude((float)$parts[5])
-                            ->setFclass($parts[6])
-                            ->setFcode($parts[7])
-                            ->setCountry($parts[8])
-                            ->setCc2($parts[9])
-                            ->setAdmin1($parts[10])
-                            ->setAdmin2($parts[11])
-                            ->setAdmin3($parts[12])
-                            ->setAdmin4($parts[13])
-                            ->setPopulation((int)$parts[14])
-                            ->setElevation((int)$parts[15])
-                            ->setGtopo30((int)$parts[16])
-                            ->setTimezone($parts[17])
-                            ->setModdate($parts[18]);
-                    }
-                    $update = new IncrementalUpdate();
-                    $update->setType($type)->setData($geoname);
-                    $updates[] = $update;
+
+                if (0 === count($parts)) continue; // each file as a 0 length line at the end ¯\_(ツ)_/¯
+
+                $parts = array_map('trim', $parts);
+                $geoname = new GeoName();
+                $type = IncrementalUpdate::TYPE_DELETE;
+                $geoname->setGeonameid((int)$parts[0]);
+
+                if (count($parts) > 3) {
+                    $type = IncrementalUpdate::TYPE_UPDATE;
+                    $geoname->setName($parts[1])
+                        ->setAsciiname($parts[2])
+                        ->setAlternatenames($parts[3])
+                        ->setLatitude((float)$parts[4])
+                        ->setLongitude((float)$parts[5])
+                        ->setFclass($parts[6])
+                        ->setFcode($parts[7])
+                        ->setCountry($parts[8])
+                        ->setCc2($parts[9])
+                        ->setAdmin1($parts[10])
+                        ->setAdmin2($parts[11])
+                        ->setAdmin3($parts[12])
+                        ->setAdmin4($parts[13])
+                        ->setPopulation((int)$parts[14])
+                        ->setElevation((int)$parts[15])
+                        ->setGtopo30((int)$parts[16])
+                        ->setTimezone($parts[17])
+                        ->setModdate($parts[18]);
                 }
+
+                $update = new IncrementalUpdate();
+                $update->setType($type)->setData($geoname);
+                $updates[] = $update;
             }
             $file = null; // close the file
         } else {

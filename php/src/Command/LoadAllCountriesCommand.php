@@ -80,25 +80,25 @@ SQL;
 
                     $inserts[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                             $params[] = $parts[0];
-                             $params[] = $parts[1];
-                             $params[] = $parts[2];
-                             $params[] = mb_substr($parts[3],0,10000);
-                             $params[] = $parts[4];
-                             $params[] = $parts[5];
-                             $params[] = $parts[6];
-                             $params[] = $parts[7];
-                             $params[] = $parts[8];
-                             $params[] =  mb_substr($parts[9],0,60);
-                             $params[] = $parts[10];
-                             $params[] = $parts[11];
-                             $params[] = $parts[12];
-                             $params[] = $parts[13];
-                             $params[] = $parts[14];
-                             $params[] = $this->stringToNumber($parts[15]);
-                             $params[] = $parts[16];
-                             $params[] = $parts[17];
-                             $params[] = $parts[18];
+                    $params[] = $parts[0];
+                    $params[] = $parts[1];
+                    $params[] = $parts[2];
+                    $params[] = mb_substr($parts[3],0,10000);
+                    $params[] = $parts[4];
+                    $params[] = $parts[5];
+                    $params[] = $parts[6];
+                    $params[] = $parts[7];
+                    $params[] = $parts[8];
+                    $params[] =  mb_substr($parts[9],0,60);
+                    $params[] = $parts[10];
+                    $params[] = $parts[11];
+                    $params[] = $parts[12];
+                    $params[] = $parts[13];
+                    $params[] = $parts[14];
+                    $params[] = $this->stringToNumber($parts[15]);
+                    $params[] = $parts[16];
+                    $params[] = $parts[17];
+                    $params[] = $parts[18];
 
                     try {
                         if(($counter % self::BULK_INSERT) === 0) {
@@ -107,6 +107,8 @@ SQL;
                             $inserts = [];
                         }
                     } catch (\Exception $e){
+                        fclose($handle);
+                        $pg->finish();
                         dump($e);
                         $this->dataDump($parts);
                         return self::FAILURE;
