@@ -13,7 +13,7 @@ class LoadAllCountriesCommand extends BaseCommand {
 
     const BULK_INSERT = 900;
 
-    protected static $defaultName = 'geonames:load-allcountries';
+    protected static $defaultName = 'geonames:load-all-countries';
 
     public function __construct(string $name = null) {
         parent::__construct($name);

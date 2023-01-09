@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ParseUpdateFilesCommand extends BaseCommand {
 
-    protected static $defaultName = 'geonames:parseUpdateFiles';
+    protected static $defaultName = 'geonames:parse-update-files';
 
     /**
      * @var AMQPChannel
