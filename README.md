@@ -1,30 +1,47 @@
 # GeoNames
-This is a project to automate the ETL of the GeoNames public data sets
+This is a project to automate the ETL of the GeoNames public data sets updates
 
 ## Usage
 
-* create a virtualenv for the script to run
-````bash
-virtualenv venv
-````
-* enter the virtualenv
-````bash
-source venv/bin/activate
-````
-* install the required pip packages
-````bash
-pip install -r requirements.txt
-````
+There are 3 primary functions of the code.
 
-the puller.py script is currently the only working component.  It will create a Downloads directory to pull the principal files from the [GeoNames](https://www.geonames.org) dump directory along with the incremental files.
-````bash
-python puller.py
-````
+1. Download the daily updates files
+2. Add to the messaging queue the updates to perform
+3. Persist those updates from the queue to the database
 
-There is a progress bar to show the progress of processing the 11 files, however the first file is the largest at several hundred MB
+### Initial Setup - Development 
 
+#### Create a `docker-compose.override.yml` file
 
-the process.py script will process through the incremental files and add them to the rabbitMQ server to queue changes to the database.  This only needs to run once a day after the puller script runs to queue the changes to be written to the database.
+Navigate to the `<solution directory>\devops\dev` directory. And create a `docker-compose.override.yml` file from 
+the example file in the source code.
+```shell
+cp docker-compose.override.yml.example docker-compose.override.yml
+```
 
+All that should need to be set for the development are your local paths for docker to get to the solution directory.
 
-there is a run_queue_readers.sh script that will run and detach the queue readers that run in the background waiting for information to be written to the rabbitMQ queues to be processes by the readers and committed to the database.
+#### Start the dev environment
+
+Navigate to the `<solution directory>\devops\dev` directory.
+
+```shell
+docker-compose up -d
+```
+
+#### Install the project dependencies
+
+Navigate to the `<solution directory>\devops\dev` directory.  This only needs to be performed once when creating a 
+new solution.
+
+```shell
+docker-compose exec cli composer insall
+```
+
+### Scripts
+
+list the commands in the geonames namespace
+
+```shell
+docker-compose exec cli php ./bin/console list geonames
+```
